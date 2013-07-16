@@ -6,5 +6,7 @@
 
 (defpackage #:defroute
   (:use :cl :hunchentoot :cl-ppcre)
-  (:export #:add-route))
+  (:export #:add-route
+           #:defroute-acceptor
+           #:defroute-ssl-acceptor))
 

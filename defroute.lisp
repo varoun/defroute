@@ -47,10 +47,17 @@
      return (funcall handler request)
      finally (call-next-method)))
 
+(defmacro add-route (route)
+  "Take a route specification of the form (:method :type uri handler) and add to *dispatch*."
+  `(destructuring-bind (method match-type uri handler) ',route
+     (push (list method (list match-type uri) handler)
+           *dispatch*)))
+
+;; CL-USER> (require :defroute)
+;; :DEFROUTE
+;; NIL
 ;; CL-USER> (in-package :defroute)
 ;; #<Package "DEFROUTE">
-;; DEFROUTE> (start (make-instance 'defroute-acceptor :port 8080))
-;; #<DEFROUTE-ACCEPTOR (host *, port 8080)>
 ;; DEFROUTE> (defun say-get (request)
 ;;             (setf (content-type*) "text/plain")
 ;;             "You used GET on the resource.")
@@ -63,12 +70,15 @@
 ;; ;Compiler warnings :
 ;; ;   In SAY-POST: Unused lexical variable REQUEST
 ;; SAY-POST
-;; DEFROUTE> (push '(:GET (:prefix "/v1/someresource") say-get) *dispatch*)
+;; DEFROUTE> (add-route (:get :prefix "/v1/someresource" say-get))
 ;; ((:GET (:PREFIX "/v1/someresource") SAY-GET))
-;; DEFROUTE> (push '(:POST (:prefix "/v1/someresource") say-post) *dispatch*)
-;; 127.0.0.1 - [2013-07-16 14:30:26] "GET /v1/someresource HTTP/1.1" 200 29 "-" "curl/7.28.1"
-;; 127.0.0.1 - [2013-07-16 14:30:44] "POST /v1/someresource HTTP/1.1" 200 30 "-" "curl/7.28.1"
+;; DEFROUTE> (add-route (:post :prefix "/v1/someresource" say-post))
 ;; ((:POST (:PREFIX "/v1/someresource") SAY-POST) (:GET (:PREFIX "/v1/someresource") SAY-GET))
+;; DEFROUTE> (start (make-instance 'defroute-acceptor :port 8080))
+;; 127.0.0.1 - [2013-07-16 16:43:59] "GET /v1/someresource HTTP/1.1" 200 29 "-" "curl/7.28.1"
+;; 127.0.0.1 - [2013-07-16 16:44:16] "POST /v1/someresource HTTP/1.1" 200 30 "-" "curl/7.28.1"
+;; 127.0.0.1 - [2013-07-16 16:44:26] "GET /v1/someresource HTTP/1.1" 200 29 "-" "curl/7.28.1"
+;; #<DEFROUTE-ACCEPTOR (host *, port 8080)>
 ;; DEFROUTE> 
 
 ;; In a shell

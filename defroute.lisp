@@ -1,10 +1,8 @@
 ;;;; -*- Mode: LISP; Syntax: COMMON-LISP; Package: CL-USER; Base: 10 -*-
-
 ;;;; Author: varoun (Varoun P)
-
 ;;;; Simple routing library for Hunchentoot.
 
-(in-package #:hunchentoot)
+(in-package #:defroute)
 ; (declaim #.*optimize-default*)
 
 (defvar *dispatch* '()
@@ -49,29 +47,29 @@
      return (funcall handler request)
      finally (call-next-method)))
 
-
-;; Usage:
-;; CL-USER> (in-package :hunchentoot)
-;; #<Package "HUNCHENTOOT">
-;; TBNL> (start (make-instance 'defroute-acceptor :port 8080))
+;; CL-USER> (in-package :defroute)
+;; #<Package "DEFROUTE">
+;; DEFROUTE> (start (make-instance 'defroute-acceptor :port 8080))
 ;; #<DEFROUTE-ACCEPTOR (host *, port 8080)>
-;; TBNL> (defun say-get (request)
-;;         (setf (content-type*) "text/plain")
-;;         "You used GET on the resource.")
+;; DEFROUTE> (defun say-get (request)
+;;             (setf (content-type*) "text/plain")
+;;             "You used GET on the resource.")
 ;; ;Compiler warnings :
 ;; ;   In SAY-GET: Unused lexical variable REQUEST
 ;; SAY-GET
-;; TBNL> (defun say-post (request)
-;;         (setf (content-type*) "text/plain")
-;;         "You used POST on the resource.")
+;; DEFROUTE> (defun say-post (request)
+;;             (setf (content-type*) "text/plain")
+;;             "You used POST on the resource.")
 ;; ;Compiler warnings :
 ;; ;   In SAY-POST: Unused lexical variable REQUEST
 ;; SAY-POST
-;; TBNL> (push '(:GET (:prefix "/v1/someresource") say-get) *dispatch*)
+;; DEFROUTE> (push '(:GET (:prefix "/v1/someresource") say-get) *dispatch*)
 ;; ((:GET (:PREFIX "/v1/someresource") SAY-GET))
-;; TBNL> (push '(:POST (:prefix "/v1/someresource") say-post) *dispatch*)
+;; DEFROUTE> (push '(:POST (:prefix "/v1/someresource") say-post) *dispatch*)
+;; 127.0.0.1 - [2013-07-16 14:30:26] "GET /v1/someresource HTTP/1.1" 200 29 "-" "curl/7.28.1"
+;; 127.0.0.1 - [2013-07-16 14:30:44] "POST /v1/someresource HTTP/1.1" 200 30 "-" "curl/7.28.1"
 ;; ((:POST (:PREFIX "/v1/someresource") SAY-POST) (:GET (:PREFIX "/v1/someresource") SAY-GET))
-;; TBNL>
+;; DEFROUTE> 
 
 ;; In a shell
 ;; $ curl http://localhost:8080/v1/someresource

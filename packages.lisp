@@ -5,5 +5,6 @@
 (in-package :cl-user)
 
 (defpackage #:defroute
-  (:use :cl :hunchentoot :cl-ppcre))
+  (:use :cl :hunchentoot :cl-ppcre)
+  (:export #:add-route))
 
